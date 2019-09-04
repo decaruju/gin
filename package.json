@@ -55,8 +55,10 @@
     }
   },
   "dependencies": {
-    "vue": "^2.5.16",
+    "@cognibox/eslint-config-cbx-vue": "^1.0.2",
     "axios": "^0.18.0",
+    "pg": "^7.12.1",
+    "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

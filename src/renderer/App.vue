@@ -1,44 +1,63 @@
 <template>
   <div id="app">
-    <layout
+    <TabView
       :layout="layout"
+      :titles="layout.map((item) => item.component.name)"
       direction="row"
     />
   </div>
 </template>
 
 <script>
-import Layout from './components/Layout.vue'
+import SplitView from './components/SplitView.vue';
+import TabView from './components/TabView.vue';
+import Sql from './apps/Sql.vue';
 
 const layout = [
   {
-    component: Layout,
+    component: Sql,
+  },
+  {
+    component: Sql,
+  },
+  {
+    component: SplitView,
     props: {
       layout: [
         {
-          component: Layout,
+          component: Sql,
+        },
+        {
+          component: SplitView,
           props: {
-            layout: [{ component: 'input' }],
-            direction: 'row'
-          }
-        }
+            layout: [
+              {
+                component: Sql,
+              },
+              {
+                component: Sql,
+              },
+            ],
+            direction: 'column',
+          },
+        },
       ],
-      direction: 'column'
-    }
-  }
-]
+      direction: 'row',
+    },
+  },
+];
 
 export default {
-  name: 'gin',
-  components: { Layout },
-  data () {
-    return { layout }
-  }
-}
+  name: 'Gin',
+  components: { TabView, SplitView },
+  data() {
+    return { layout };
+  },
+};
 </script>
 
 <style>
- #app {
+ html, body, #app {
      height: 100%
  }
   /* CSS */

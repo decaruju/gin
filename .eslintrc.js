@@ -1,6 +1,6 @@
 module.exports = {
+  extends: "@cognibox/eslint-config-cbx-vue",
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module'
   },
@@ -8,7 +8,6 @@ module.exports = {
     browser: true,
     node: true
   },
-  extends: 'standard',
   globals: {
     __static: true
   },
