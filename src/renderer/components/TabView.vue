@@ -1,7 +1,7 @@
 <template>
   <div class="tab-view">
     <div class="flex-container" :style="{ flexDirection: 'row', height: '32px' }">
-        <button class="flex-item" v-for="(title, index) in titles" @click="activeTab=index">
+        <button class="tab" :class="{ active: index===activeTab }" v-for="(title, index) in titles" @click="activeTab=index">
             {{ title }}
         </button>
     </div>
@@ -45,4 +45,13 @@ export default {
  .tab-view {
      height: 100%;
  }
+ .tab {
+     flex-grow: 1;
+     background-color: grey;
+     border: none;
+ }
+ .tab.active {
+     background-color: blue;
+ }
+
 </style>

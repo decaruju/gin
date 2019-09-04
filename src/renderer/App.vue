@@ -58,7 +58,13 @@ export default {
 
 <style>
  html, body, #app {
-     height: 100%
+     height: 100%;
+     margin: 0;
+ }
+ .menu {
+     display: inline-block;
+     with: 100px;
+     height: 100%;
  }
   /* CSS */
 </style>
