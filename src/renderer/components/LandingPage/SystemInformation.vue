@@ -34,7 +34,6 @@
   export default {
     data() {
       return {
-        electron: process.versions.electron,
         name: this.$route.name,
         node: process.versions.node,
         path: this.$route.path,
