@@ -11,7 +11,7 @@
 <script>
 import SplitView from './components/SplitView.vue';
 import TabView from './components/TabView.vue';
-import Sql from './apps/Sql.vue';
+import Sql from './apps/sql/Sql.vue';
 
 const layout = [
   {
