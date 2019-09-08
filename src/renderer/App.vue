@@ -15,7 +15,18 @@ import Sql from './apps/sql/Sql.vue';
 
 const layout = [
   {
-    component: Sql,
+    component: SplitView,
+    props: {
+      layout: [
+        {
+          component: Sql,
+        },
+        {
+          component: Sql,
+        },
+      ],
+      direction: 'row',
+    },
   },
   {
     component: Sql,
@@ -49,7 +60,7 @@ const layout = [
 
 export default {
   name: 'Gin',
-  components: { TabView, SplitView },
+  components: { TabView },
   data() {
     return { layout };
   },
@@ -57,9 +68,26 @@ export default {
 </script>
 
 <style>
+button {
+border: none;
+font-weight: bold;
+}
+  :focus,
+  :active:focus,
+  .active:focus,
+  .focus,
+  :active.focus,
+  .active.focus {
+    outline: none !important;
+  }
  html, body, #app {
+     background-color: black;
      height: 100%;
      margin: 0;
+     font-family: Arial, Helvetica, sans-serif;
+ }
+ * {
+     overflow: hidden;
  }
  .menu {
      display: inline-block;

@@ -20,6 +20,7 @@ function createWindow() {
     useContentSize: true,
     width: 1000,
   });
+  mainWindow.setMenu(null);
 
   mainWindow.loadURL(winURL);
 
