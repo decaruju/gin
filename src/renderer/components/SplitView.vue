@@ -5,20 +5,25 @@
     :class="[`flex-container-${direction}`]"
     :style="{ flexDirection: direction }"
   >
+    <button @click="onOpenApp(0)">
+      +
+    </button>
     <template v-for="(child, index) in layout">
       <div
+        :key="child.key"
         class="flex-item"
         :style="{ width: direction === 'row' ? `${widths[index]}px` : '100%' }"
       >
         <component
           :is="child.component"
           v-bind="child.props"
+          @close="layout.splice(index, 1)"
         />
       </div>
       <template v-if="index !== layout.length-1">
         <div
           class="resizer"
-          :class="{ 'vertical-resizer': direction==='row', 'horitontal-resizer': direction==='column' }"
+          :class="{ 'vertical-resizer': direction==='row', 'horizontal-resizer': direction==='column' }"
           @mousedown.left="resize($event, index)"
         />
       </template>
@@ -30,8 +35,8 @@
 export default {
   name: 'SplitView',
   props: {
-    layout: {
-      type: Array,
+    openApp: {
+      type: Function,
       required: true,
     },
     direction: {
@@ -42,6 +47,7 @@ export default {
   data() {
     return {
       widths: [],
+      layout: [],
       isMounted: false,
     };
   },
@@ -65,6 +71,9 @@ export default {
         }
       }
     },
+    layout() {
+      this.widths = Array.from({ length: this.layout.length }).map(() => window.innerWidth / this.layout.length);
+    },
   },
   mounted() {
     this.isMounted = true;
@@ -73,6 +82,11 @@ export default {
     this.widths = Array.from({ length: this.layout.length }).map(() => window.innerWidth / this.layout.length);
   },
   methods: {
+    async onOpenApp(index) {
+      try {
+        this.layout.splice(index, 0, await this.openApp());
+      } catch (_) {}
+    },
     resize(mouseDownEvent, index) {
       const initialX = mouseDownEvent.clientX;
       const initialWidth = this.widths[index];
@@ -92,6 +106,11 @@ export default {
 </script>
 
 <style>
+ .close-app {
+     position: absolute;
+     top: 0;
+     left: 0;
+ }
  .flex-container-column {
      width: 100%;
  }
@@ -102,6 +121,7 @@ export default {
 
  .flex-item {
      padding: 4px;
+     flex-grow: 1;
      border: solid 1px #595970;
  }
  .resizer {
@@ -113,8 +133,10 @@ export default {
      cursor: ew-resize;
  }
  .horizontal-resizer {
-     height: 5px;
-     background-color: grey;
+     height: 3px;
+     width: 100%;
+     background-color: #494960;
+     cursor: ns-resize;
  }
 
 </style>

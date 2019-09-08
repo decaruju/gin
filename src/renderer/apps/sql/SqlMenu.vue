@@ -1,7 +1,7 @@
 <template>
   <div
     class="sql-menu-container"
-    :style="{ width: `${width}px` }"
+    :style="{ width: `${width}px`, 'min-width': `${width}px` }"
   >
     <div class="sql-menu">
       <div v-for="schema in schemas">
@@ -17,12 +17,13 @@
           v-if="openSchemas[schema]"
           :key="`${schema}-tables`"
         >
-          <div
+          <button
             v-for="table in tables[schema]"
             class="table"
+            @click="$emit('tableClick', table, schema)"
           >
             {{ table }}
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -92,7 +93,8 @@ export default {
  .sql-menu {
      display: inline-block;
      flex-grow: 1;
-     overflow: hidden;
+     overflow-x: hidden;
+     overflow-y: auto;
      height: 100%;
  }
  .schema {
@@ -122,6 +124,11 @@ export default {
      margin: 2px;
      margin-left: 12px;
      font-size: 12px;
+     cursor: pointer;
+ }
+ .table:hover {
+     background-color: #797990;
+     color: #393950;
  }
  .schema.open {
      background-color: #797990;

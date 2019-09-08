@@ -4,6 +4,7 @@
       :schemas="schemas"
       :tables="tables"
       @resize="menuWidth=$event"
+      @tableClick="tableClick"
     />
     <div class="sql-container">
       <div class="sql-toolbar">
@@ -12,6 +13,9 @@
           @click="openConfig"
         >
           Config
+        </button>
+        <button @click="$emit('close')">
+          Close
         </button>
       </div>
       <div class="sql-interface">
@@ -28,6 +32,19 @@
           :fields="fields"
           @submit="submit"
         />
+        <div
+          v-for="(element, index) in history"
+          class="sql-history"
+          @click="changeQuery(element.query, index)"
+        >
+          <div v-if="element.draft">
+            Draft query:
+          </div>
+          <div v-else>
+            Query returned {{ element.length }} rows.
+          </div>
+          <pre> {{ element.query }} </pre>
+        </div>
       </div>
     </div>
   </div>
@@ -53,13 +70,20 @@ export default {
       data: {},
       schemas: [],
       fields: [],
+      history: [],
       tables: {},
       modalOpen: false,
       menuWidth: 100,
+      executed: false,
       submit() {
         // leave empty
       },
     };
+  },
+  watch: {
+    query() {
+      this.executed = false;
+    },
   },
   created() {
     this.syncStructure();
@@ -79,6 +103,10 @@ export default {
         this.modelOpen = false;
       };
     },
+    tableClick(table, schema) {
+      this.query = `SELECT * FROM ${schema}.${table} LIMIT 10;`;
+      this.executeQuery();
+    },
     async syncStructure() {
       let result = await this.execute('SELECT nspname FROM pg_catalog.pg_namespace;');
       this.schemas = result.rows.map((row) => row.nspname);
@@ -88,6 +116,11 @@ export default {
         if (!(row.schemaname in this.tables)) this.tables[row.schemaname] = [];
         this.tables[row.schemaname].push(row.tablename);
       });
+    },
+    changeQuery(query, index) {
+      this.history.splice(index, 1);
+      if (!this.executed) this.history.splice(0, 0, { draft: true, query: this.query });
+      this.query = query;
     },
     async execute(query) {
       let rtn;
@@ -104,6 +137,8 @@ export default {
     },
     async executeQuery() {
       this.data = await this.execute(this.query);
+      this.executed = true;
+      this.history.splice(0, 0, { query: this.query, length: (this.data && this.data.rows && this.data.rows.length) || 0 });
     },
   },
 };
@@ -124,6 +159,7 @@ export default {
  }
  .sql-interface {
      padding: 16px;
+     width: 100%;
  }
  .sql-container {
      flex-grow: 1;
@@ -144,5 +180,11 @@ export default {
      padding: auto;
      color: white;
      display: inline-block;
+ }
+ .sql-history {
+     color: white;
+     background-color: #393950;
+     padding: 4px;
+     margin: 4px;
  }
 </style>
