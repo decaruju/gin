@@ -124,7 +124,7 @@ export default {
     },
     async execute(query) {
       let rtn;
-      const client = new Client({ connectionString: 'postgres://hqectjvv:HHdbpQap7lBeEvzeJyUSoJlbqH_aGrqZ@salt.db.elephantsql.com:5432/hqectjvv' });
+      const client = new Client({ connectionString: 'postgres://dev:dev@localhost:5432/cbx4dev' });
       try {
         client.connect();
         rtn = await client.query(query);
