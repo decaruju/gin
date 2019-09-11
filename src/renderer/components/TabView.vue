@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import Git from '../apps/git/Git';
 export default {
   name: 'TabView',
   props: {
@@ -51,7 +52,7 @@ export default {
   data() {
     return {
       activeTab: 0,
-      layout: [],
+      layout: [{ component: Git }],
     };
   },
   methods: {

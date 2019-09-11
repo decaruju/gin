@@ -103,6 +103,7 @@ font-weight: bold;
     outline: none !important;
   }
  html, body, #app {
+     color: white;
      background-color: black;
      height: 100%;
      margin: 0;
