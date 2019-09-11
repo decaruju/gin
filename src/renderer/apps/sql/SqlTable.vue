@@ -37,6 +37,8 @@ export default {
  .sql-table {
      width: 100%;
      overflow-x: auto;
+   overflow-y: auto;
+   height: 400px;
  }
  table {
  }

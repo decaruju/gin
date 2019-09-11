@@ -32,18 +32,20 @@
           :fields="fields"
           @submit="submit"
         />
-        <div
-          v-for="(element, index) in history"
-          class="sql-history"
-          @click="changeQuery(element.query, index)"
-        >
-          <div v-if="element.draft">
-            Draft query:
+        <div class="sql-history">
+          <div
+            v-for="(element, index) in history"
+            class="sql-history-item"
+            @click="changeQuery(element.query, index)"
+          >
+            <div v-if="element.draft">
+              Draft query:
+            </div>
+            <div v-else>
+              Query returned {{ element.length }} rows.
+            </div>
+            <pre> {{ element.query }} </pre>
           </div>
-          <div v-else>
-            Query returned {{ element.length }} rows.
-          </div>
-          <pre> {{ element.query }} </pre>
         </div>
       </div>
     </div>
@@ -181,10 +183,18 @@ export default {
      color: white;
      display: inline-block;
  }
- .sql-history {
+ .sql-history-item {
      color: white;
      background-color: #393950;
      padding: 4px;
      margin: 4px;
+ }
+
+ .sql-history {
+   position: absolute;
+   overflow-y: auto;
+   bottom: 0;
+   height: 300px;
+   width: 100%;
  }
 </style>
