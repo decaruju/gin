@@ -57,6 +57,7 @@
   "dependencies": {
     "@cognibox/eslint-config-cbx-vue": "^1.0.2",
     "axios": "^0.18.0",
+    "color": "^3.1.2",
     "nodegit": "^0.25.1",
     "pg": "^7.12.1",
     "simple-git": "^1.126.0",

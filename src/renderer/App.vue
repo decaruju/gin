@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <TabView
-      direction="row"
-      :open-app="openApp"
-    />
+    <Color />
+    <!-- <TabView -->
+    <!-- direction="row" -->
+    <!-- :open-app="openApp" -->
+    <!-- /> -->
     <div
       v-if="choice"
       class="backdrop"
@@ -35,13 +36,14 @@
 import SplitView from './components/SplitView.vue';
 import TabView from './components/TabView.vue';
 import Sql from './apps/sql/Sql.vue';
+import Color from './apps/color/Color.vue';
 import Git from './apps/git/Git.vue';
 import Fontawesome from './apps/fontawesome/Fontawesome.vue';
 import '../../static/fontawesome/css/all.min.css';
 
 export default {
   name: 'Gin',
-  components: { TabView },
+  components: { Color },
   data() {
     return { choice: undefined };
   },
@@ -83,6 +85,11 @@ export default {
           component: Fontawesome,
           name: 'Fontawesome',
           icon: 'fa-font-awesome',
+        },
+        {
+          component: Color,
+          name: 'Color picker',
+          icon: 'fa-palette',
         },
         {
           component: Sql,
