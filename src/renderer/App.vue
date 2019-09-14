@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <TabView
-        direction="row"
-        :open-app="openApp"
+      direction="row"
+      :open-app="openApp"
+      :event="currentEvent"
+      @eventCatched="currentEvent=[]"
     />
     <div
       v-if="choice"
@@ -28,6 +30,10 @@
         </button>
       </div>
     </div>
+    <div
+      class="command"
+      v-text="currentEvent.map((event) => event.key).join('')"
+    />
   </div>
 </template>
 
@@ -44,7 +50,10 @@ export default {
   name: 'Gin',
   components: { TabView },
   data() {
-    return { choice: undefined };
+    return {
+      choice: undefined,
+      currentEvent: [],
+    };
   },
   computed: {
     availableApps() {
@@ -98,7 +107,35 @@ export default {
       ];
     },
   },
+  created() {
+    document.addEventListener('keydown', this.manageEvent);
+  },
   methods: {
+    manageEvent(event) {
+      console.log(event); // eslint-disable-line no-console
+      console.log(this.choice); // eslint-disable-line no-console
+      if (this.choice) {
+        if (event.key === 'Escape') {
+          this.closeAppMenu();
+        }
+        if (event.code === 'KeyT') {
+          this.chooseApp(this.availableApps.filter((app) => app.name === 'TabView')[0]);
+        }
+        if (event.code === 'KeyR') {
+          this.chooseApp(this.availableApps.filter((app) => app.name === 'Row')[0]);
+        }
+        if (event.code === 'KeyC') {
+          this.chooseApp(this.availableApps.filter((app) => app.name === 'Column')[0]);
+        }
+        this.currentEvent = [];
+        return;
+      }
+      if (event.key === 'Escape') {
+        this.currentEvent = [];
+        return;
+      }
+      this.currentEvent.push(event);
+    },
     chooseApp(app) {
       this.choice.resolve({ ...app, key: Math.random() });
       this.choice = undefined;
@@ -192,5 +229,13 @@ font-weight: bold;
  .app-menu-close:hover {
      background-color: #797990;
      color: #191920;
+ }
+ .command {
+     position: absolute;
+     bottom: 0;
+     left: 0;
+     color: white;
+     font-family: monospace;
+     white-space: pre;
  }
 </style>
