@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <Color />
-    <!-- <TabView -->
-    <!-- direction="row" -->
-    <!-- :open-app="openApp" -->
-    <!-- /> -->
+    <TabView
+        direction="row"
+        :open-app="openApp"
+    />
     <div
       v-if="choice"
       class="backdrop"
@@ -43,7 +42,7 @@ import '../../static/fontawesome/css/all.min.css';
 
 export default {
   name: 'Gin',
-  components: { Color },
+  components: { TabView },
   data() {
     return { choice: undefined };
   },
