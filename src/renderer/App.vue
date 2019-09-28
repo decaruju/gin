@@ -1,35 +1,16 @@
 <template>
   <div id="app">
-    <TabView
-      direction="row"
+    <Root
       :open-app="openApp"
       :event="currentEvent"
-      @eventCatched="currentEvent=[]"
+      @eventCatched="clearEvent"
     />
-    <div
+    <AppMenu
       v-if="choice"
-      class="backdrop"
-      @click="closeAppMenu"
-    >
-      <div class="app-menu">
-        <button
-          v-for="app in availableApps"
-          class="app-button"
-          @click.stop="chooseApp(app)"
-        >
-          <div :class="['fa', 'fa-2x', app.icon]" />
-          <div>
-            {{ app.name }}
-          </div>
-        </button>
-        <button
-          class="app-menu-close"
-          @click="closeAppMenu"
-        >
-          X
-        </button>
-      </div>
-    </div>
+      :available-apps="availableApps"
+      @close="closeAppMenu"
+      @chooseApp="chooseApp"
+    />
     <div
       class="command"
       v-text="currentEvent.map((event) => event.key).join('')"
@@ -38,18 +19,17 @@
 </template>
 
 <script>
-import SplitView from './components/SplitView.vue';
-import TabView from './components/TabView.vue';
-import Sql from './apps/sql/Sql.vue';
-import Color from './apps/color/Color.vue';
-import Git from './apps/git/Git.vue';
-import Sound from './apps/sound/Sound.vue';
-import Fontawesome from './apps/fontawesome/Fontawesome.vue';
+import AppMenu from './components/AppMenu.vue';
+import apps from './apps.js';
+
 import '../../static/fontawesome/css/all.min.css';
 
 export default {
   name: 'Gin',
-  components: { TabView },
+  components: {
+    Root: apps.root,
+    AppMenu,
+  },
   data() {
     return {
       choice: undefined,
@@ -58,101 +38,39 @@ export default {
   },
   computed: {
     availableApps() {
-      return [
-        {
-          component: SplitView,
-          name: 'Row',
-          icon: 'fa-align-justify fa-rotate-90',
-          props: {
-            direction: 'row',
-            openApp: this.openApp,
-          },
-        },
-        {
-          component: SplitView,
-          name: 'Column',
-          icon: 'fa-align-justify',
-          props: {
-            direction: 'column',
-            openApp: this.openApp,
-          },
-        },
-        {
-          component: TabView,
-          name: 'TabView',
-          icon: 'fa-table',
-          props: {
-            openApp: this.openApp,
-          },
-        },
-        {
-          component: Git,
-          icon: 'fa-git',
-          name: 'Git',
-        },
-        {
-          component: Sound,
-          icon: 'fa-envelope',
-          name: 'sound',
-        },
-        {
-          component: Fontawesome,
-          name: 'Fontawesome',
-          icon: 'fa-font-awesome',
-        },
-        {
-          component: Color,
-          name: 'Color picker',
-          icon: 'fa-palette',
-        },
-        {
-          component: Sql,
-          name: 'Sql editor',
-          icon: 'fa-database',
-        },
-      ];
+      return apps.apps;
     },
   },
   created() {
     document.addEventListener('keydown', this.manageEvent);
   },
   methods: {
+    clearEvent() {
+      this.currentEvent = [];
+    },
     manageEvent(event) {
-      if (document.body !== document.activeElement) {
-        if (event.key === 'Escape') {
-          document.activeElement.blur();
-        }
-        return;
+      if (event.key === 'Escape' || document.activeElement !== document.body) {
+        this.clearEvent();
+        document.activeElement.blur();
+        if (this.choice) this.closeAppMenu();
+      } else if (this.choice) {
+        const choosenApp = this.availableApps.find((app) => app.shortcut === event.code);
+        if (choosenApp) this.chooseApp(choosenApp);
+      } else {
+        this.currentEvent.push(event);
       }
-      if (this.choice) {
-        if (event.key === 'Escape') {
-          this.closeAppMenu();
-        }
-        if (event.code === 'KeyT') {
-          this.chooseApp(this.availableApps.filter((app) => app.name === 'TabView')[0]);
-        }
-        if (event.code === 'KeyR') {
-          this.chooseApp(this.availableApps.filter((app) => app.name === 'Row')[0]);
-        }
-        if (event.code === 'KeyC') {
-          this.chooseApp(this.availableApps.filter((app) => app.name === 'Column')[0]);
-        }
-        this.currentEvent = [];
-        return;
-      }
-      if (event.key === 'Escape') {
-        this.currentEvent = [];
-        return;
-      }
-      this.currentEvent.push(event);
     },
     chooseApp(app) {
-      this.choice.resolve({ ...app, key: Math.random() });
-      this.choice = undefined;
+      this.choice.resolve({ ...app, key: Math.random(), props: { ...app.props, openApp: this.openApp } });
+      this.clearChoice();
     },
     closeAppMenu() {
       this.choice.reject();
+      this.clearChoice();
+    },
+    clearChoice() {
       this.choice = undefined;
+      this.clearEvent();
     },
     openApp() {
       this.choice = {};
@@ -168,84 +86,32 @@ export default {
 
 <style>
 button {
-border: none;
-font-weight: bold;
+ border: none;
+ font-weight: bold;
 }
-  :focus,
-  :active:focus,
-  .active:focus,
-  .focus,
-  :active.focus,
-  .active.focus {
-    outline: none !important;
-  }
- html, body, #app {
-     background-color: black;
-     height: 100%;
-     margin: 0;
-     font-family: Arial, Helvetica, sans-serif;
- }
- * {
-     overflow: hidden;
- }
- .menu {
-     display: inline-block;
-     width: 100px;
-     height: 100%;
- }
- .backdrop {
-     position: absolute;
-     width: 100%;
-     height: 100%;
-     top: 0;
-     left: 0;
- }
- .app-menu {
-     position: absolute;
-     margin: auto;
-     width: 60%;
-     height: 60%;
-     top: 20%;
-     left: 20%;
-     background-color: #393950;
-     z-index: 2;
-     padding: 2%;
- }
- .app-button {
-     width: 21%;
-     height: 21%;
-     margin: 2%;
-     padding: 0px;
-     cursor: pointer;
-     color: #797990;
-     background-color: #191920;
- }
- .app-button:hover {
-     background-color: #797990;
-     color: #191920;
- }
- .app-button .fa {
-     padding: 4px;
- }
- .app-menu-close {
-     position: absolute;
-     top: 0;
-     right: 0;
-     cursor: pointer;
-     color: #797990;
-     background-color: #191920;
- }
-
- .app-menu-close:hover {
-     background-color: #797990;
-     color: #191920;
- }
- .command {
-     position: absolute;
-     bottom: 0;
-     left: 0;
-     color: white;
-     font-family: monospace;
-     white-space: pre;
- }
+:focus,
+:active:focus,
+.active:focus,
+.focus,
+:active.focus,
+.active.focus {
+  outline: none !important;
+}
+html, body, #app {
+    background-color: black;
+    height: 100%;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+* {
+    overflow: hidden;
+}
+.command {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: white;
+    font-family: monospace;
+    white-space: pre;
+}
 </style>
