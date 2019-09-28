@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <Root
-      :open-app="openApp"
       :event="currentEvent"
       @eventCatched="clearEvent"
+      v-bind="appProps"
     />
     <AppMenu
       v-if="choice"
@@ -21,6 +21,7 @@
 <script>
 import AppMenu from './components/AppMenu.vue';
 import apps from './apps.js';
+import keys from './keys.js';
 
 import '../../static/fontawesome/css/all.min.css';
 
@@ -34,6 +35,10 @@ export default {
     return {
       choice: undefined,
       currentEvent: [],
+      appProps: {
+        openApp: this.openApp,
+        keys: keys,
+      },
     };
   },
   computed: {
@@ -49,7 +54,7 @@ export default {
       this.currentEvent = [];
     },
     manageEvent(event) {
-      if (event.key === 'Escape' || document.activeElement !== document.body) {
+      if (event.key === keys.stop || document.activeElement !== document.body) {
         this.clearEvent();
         document.activeElement.blur();
         if (this.choice) this.closeAppMenu();
@@ -61,7 +66,7 @@ export default {
       }
     },
     chooseApp(app) {
-      this.choice.resolve({ ...app, key: Math.random(), props: { ...app.props, openApp: this.openApp } });
+      this.choice.resolve({ ...app, key: Math.random(), props: { ...app.props, ...this.appProps } });
       this.clearChoice();
     },
     closeAppMenu() {

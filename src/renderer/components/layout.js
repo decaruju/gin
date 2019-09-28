@@ -1,5 +1,9 @@
 export default {
   props: {
+    keys: {
+      type: Object,
+      required: true,
+    },
     openApp: {
       type: Function,
       required: true,
@@ -18,8 +22,9 @@ export default {
   },
   watch: {
     event() {
+      console.log(this.event); //eslint-disable-line no-console
       if (!this.event.length) return;
-      if (this.event[0].code !== 'Space' && this.layout.length) {
+      if (this.event[0].code !== this.keys.prefix && this.layout.length) {
         this.transmittedEvent = this.event;
         return;
       }
@@ -27,22 +32,22 @@ export default {
       if (this.event[1]) event = this.event[1];
       else if (this.layout.length) return;
       else event = this.event[0];
-      if (event.code === 'Space') {
+      if (event.code === this.keys.prefix) {
         this.transmittedEvent = this.event.slice(1);
       }
-      if (event.code === 'KeyT') {
+      if (event.code === this.keys.layout.open) {
         this.$emit('eventCatched');
         this.onOpenApp();
       }
-      if (event.code === 'KeyL') {
-        this.$emit('eventCatched');
-        this.nextApp();
-      }
-      if (event.code === 'KeyD') {
+      if (event.code === this.keys.layout.close) {
         this.$emit('eventCatched');
         this.closeApp(this.activeTab);
       }
-      if (event.code === 'KeyH') {
+      if (event.code === this.keys.layout.next) {
+        this.$emit('eventCatched');
+        this.nextApp();
+      }
+      if (event.code === this.keys.layout.previous) {
         this.$emit('eventCatched');
         this.previousApp();
       }
