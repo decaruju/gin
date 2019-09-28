@@ -32,13 +32,12 @@
 </template>
 
 <script>
+import layout from './layout';
+
 export default {
   name: 'SplitView',
+  mixins: [layout],
   props: {
-    openApp: {
-      type: Function,
-      required: true,
-    },
     direction: {
       type: String,
       required: true,
@@ -47,7 +46,6 @@ export default {
   data() {
     return {
       widths: [],
-      layout: [],
       isMounted: false,
     };
   },
@@ -82,11 +80,6 @@ export default {
     this.widths = Array.from({ length: this.layout.length }).map(() => window.innerWidth / this.layout.length);
   },
   methods: {
-    async onOpenApp(index) {
-      try {
-        this.layout.splice(index, 0, await this.openApp());
-      } catch (_) {}
-    },
     resize(mouseDownEvent, index) {
       const initialX = mouseDownEvent.clientX;
       const initialWidth = this.widths[index];

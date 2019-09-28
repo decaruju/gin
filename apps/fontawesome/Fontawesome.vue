@@ -18,6 +18,7 @@
       <span
         v-for="icon in filteredIcons"
         class="fontawesome-icon"
+        @click="searchText=icon"
       >
         <span :class="['fa', klass, `fa-${icon}`]" /> {{ icon }}
       </span>
@@ -52,7 +53,11 @@ export default {
     padding: 2px;
     font-size: 16px;
     background-color: #393950;
+  cursor: pointer;
 }
+ .fontawesome-icon:hover {
+   background-color: #494960;
+ }
  .fontawesome-app .fa {
      padding: 2px;
  }

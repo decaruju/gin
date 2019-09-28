@@ -7,15 +7,15 @@
       <button
         v-for="(children, index) in layout"
         class="tab"
-        :class="{ active: index===activeTab }"
-        @click="activeTab=index"
+        :class="{ active: index===activeIndex }"
+        @click="activeIndex=index"
       >
         <span class="tab-text">
           {{ children.name }}
         </span>
         <button
           class="close-button"
-          @click.stop="closeTab(index)"
+          @click.stop="closeApp(index)"
         >
           X
         </button>
@@ -31,90 +31,22 @@
       <component
         :is="component.component"
         v-for="(component, index) in layout"
-        v-show="activeTab === index"
+        v-show="activeIndex === index"
         :event="transmittedEvent"
         v-bind="component.props"
         @eventCatched="$emit('eventCatched')"
-        @close="closeTab(index)"
+        @close="closeApp(index)"
       />
     </div>
   </div>
 </template>
 
 <script>
+import layout from './layout';
+
 export default {
   name: 'TabView',
-  props: {
-    openApp: {
-      type: Function,
-      required: true,
-    },
-    event: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      activeTab: 0,
-      layout: [],
-      transmittedEvent: [],
-    };
-  },
-  watch: {
-    event() {
-      console.log(this.event); // eslint-disable-line no-console
-      if (!this.event.length) return;
-      if (this.event[0].code === 'Space') {
-        this.transmittedEvent = this.event.slice(1);
-        return;
-      }
-      if (this.event[0].code === 'KeyT') {
-        this.$emit('eventCatched');
-        this.onOpenApp();
-      }
-      if (this.event[0].code === 'KeyL') {
-        this.$emit('eventCatched');
-        this.nextTab();
-      }
-      if (this.event[0].code === 'KeyD') {
-        this.$emit('eventCatched');
-        this.closeTab(this.activeTab);
-      }
-      if (this.event[0].code === 'KeyH') {
-        this.$emit('eventCatched');
-        this.previousTab();
-      }
-    },
-  },
-  methods: {
-    async onOpenApp() {
-      try {
-        this.layout.push(await this.openApp());
-      } catch (_) {
-        return false;
-      }
-      return true;
-    },
-    nextTab() {
-      this.choseTab(this.activeTab + 1);
-    },
-    previousTab() {
-      this.choseTab(this.activeTab - 1);
-    },
-    choseTab(index) {
-      this.activeTab = Math.min(Math.max(index, 0), this.layout.length - 1);
-    },
-    closeTab(index) {
-      if (index < this.activeTab) {
-        this.activeTab -= 1;
-      }
-      if (index === this.activeTab) {
-        this.activeTab = 0;
-      }
-      this.layout.splice(index, 1);
-    },
-  },
+  mixins: [layout],
 };
 </script>
 

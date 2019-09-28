@@ -43,6 +43,7 @@ import TabView from './components/TabView.vue';
 import Sql from './apps/sql/Sql.vue';
 import Color from './apps/color/Color.vue';
 import Git from './apps/git/Git.vue';
+import Sound from './apps/sound/Sound.vue';
 import Fontawesome from './apps/fontawesome/Fontawesome.vue';
 import '../../static/fontawesome/css/all.min.css';
 
@@ -61,7 +62,7 @@ export default {
         {
           component: SplitView,
           name: 'Row',
-          icon: 'fa-grip-lines-vertical',
+          icon: 'fa-align-justify fa-rotate-90',
           props: {
             direction: 'row',
             openApp: this.openApp,
@@ -70,7 +71,7 @@ export default {
         {
           component: SplitView,
           name: 'Column',
-          icon: 'fa-grip-lines',
+          icon: 'fa-align-justify',
           props: {
             direction: 'column',
             openApp: this.openApp,
@@ -88,6 +89,11 @@ export default {
           component: Git,
           icon: 'fa-git',
           name: 'Git',
+        },
+        {
+          component: Sound,
+          icon: 'fa-envelope',
+          name: 'sound',
         },
         {
           component: Fontawesome,
@@ -112,8 +118,12 @@ export default {
   },
   methods: {
     manageEvent(event) {
-      console.log(event); // eslint-disable-line no-console
-      console.log(this.choice); // eslint-disable-line no-console
+      if (document.body !== document.activeElement) {
+        if (event.key === 'Escape') {
+          document.activeElement.blur();
+        }
+        return;
+      }
       if (this.choice) {
         if (event.key === 'Escape') {
           this.closeAppMenu();
