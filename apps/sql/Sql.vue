@@ -30,6 +30,7 @@
         <SqlForm
           v-if="modalOpen"
           :fields="fields"
+          :value="config"
           @submit="submit"
         />
         <div class="sql-history">
@@ -68,7 +69,13 @@ export default {
   data() {
     return {
       query: 'SELECT NOW();',
-      config: {},
+      config: {
+        host: 'salt.db.elephantsql.com',
+        user: 'hqectjvv',
+        password: 'HHdbpQap7lBeEvzeJyUSoJlbqH_aGrqZ',
+        database: 'hqectjvv',
+        port: '5432',
+      },
       data: {},
       schemas: [],
       fields: [],
@@ -94,15 +101,17 @@ export default {
     openConfig() {
       this.modalOpen = true;
       this.fields = [
-        'address',
+        'host',
         'user',
         'password',
         'database',
         'port',
       ];
       this.submit = (event) => {
+        this.log(event);
         this.config = event;
-        this.modelOpen = false;
+        this.modalOpen = false;
+        this.syncStructure();
       };
     },
     tableClick(table, schema) {
@@ -126,9 +135,9 @@ export default {
     },
     async execute(query) {
       let rtn;
-      const client = new Client({ connectionString: 'postgres://dev:dev@localhost:5432/cbx4dev' });
+      const client = new Client(this.config);
       try {
-        client.connect();
+        await client.connect();
         rtn = await client.query(query);
       } catch (e) {
         rtn = e;

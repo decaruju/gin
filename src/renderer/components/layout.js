@@ -22,7 +22,6 @@ export default {
   },
   watch: {
     event() {
-      console.log(this.event); //eslint-disable-line no-console
       if (!this.event.length) return;
       if (this.event[0].code !== this.keys.prefix && this.layout.length) {
         this.transmittedEvent = this.event;
@@ -41,7 +40,7 @@ export default {
       }
       if (event.code === this.keys.layout.close) {
         this.$emit('eventCatched');
-        this.closeApp(this.activeTab);
+        this.closeApp(this.activeIndex);
       }
       if (event.code === this.keys.layout.next) {
         this.$emit('eventCatched');
@@ -53,6 +52,11 @@ export default {
       }
     },
   },
+  computed: {
+    activeTab() {
+      return this.layout[this.activeIndex];
+    },
+  },
   methods: {
     async onOpenApp(index) {
       try {
@@ -60,19 +64,21 @@ export default {
       } catch (_) {}
     },
     nextApp() {
-      this.chooseApp(this.activeTab + 1);
+      this.log('yes');
+      this.chooseApp(this.activeIndex + 1);
     },
     previousApp() {
-      this.chooseApp(this.activeTab - 1);
+      this.chooseApp(this.activeIndex - 1);
     },
     chooseApp(index) {
-      this.activeIndex = Math.min(Math.max(index, 0), this.layout.length - 1);
+      this.log(index);
+      this.activeIndex = index % this.layout.length;
     },
     closeApp(index) {
-      if (index < this.activeTab) {
+      if (index < this.activeIndex) {
         this.activeIndex -= 1;
       }
-      if (index === this.activeTab) {
+      if (index === this.activeIndex) {
         this.activeIndex = 0;
       }
       this.layout.splice(index, 1);

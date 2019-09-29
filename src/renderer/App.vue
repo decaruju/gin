@@ -2,8 +2,8 @@
   <div id="app">
     <Root
       :event="currentEvent"
-      @eventCatched="clearEvent"
       v-bind="appProps"
+      @eventCatched="clearEvent"
     />
     <AppMenu
       v-if="choice"
@@ -54,9 +54,14 @@ export default {
       this.currentEvent = [];
     },
     manageEvent(event) {
+      if (document.activeElement !== document.body) {
+        if (event.key === keys.stop) {
+          document.activeElement.blur();
+        }
+        return;
+      }
       if (event.key === keys.stop || document.activeElement !== document.body) {
         this.clearEvent();
-        document.activeElement.blur();
         if (this.choice) this.closeAppMenu();
       } else if (this.choice) {
         const choosenApp = this.availableApps.find((app) => app.shortcut === event.code);
@@ -109,7 +114,8 @@ html, body, #app {
     font-family: Arial, Helvetica, sans-serif;
 }
 * {
-    overflow: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .command {
     position: absolute;

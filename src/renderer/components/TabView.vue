@@ -10,22 +10,21 @@
         :class="{ active: index===activeIndex }"
         @click="activeIndex=index"
       >
-        <span class="tab-text">
-          {{ children.name }}
-        </span>
+        <div
+          class="tab-text"
+          v-text="children.name"
+        />
         <button
           class="close-button"
           @click.stop="closeApp(index)"
-        >
-          X
-        </button>
+          v-text="'X'"
+        />
       </button>
-      <div
+      <button
         class="open-app"
         @click.stop="onOpenApp"
-      >
-        +
-      </div>
+        v-text="'+'"
+      />
     </div>
     <div class="tab-container">
       <component
@@ -50,57 +49,96 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+ @import "../index.scss";
+
+ $tab-height: 32px;
+
  .tab-view {
-     height: 100%;
- }
- .tab {
+   height: 100%;
+
+   .tab {
+     position: relative;
      flex-grow: 1;
-     background-color: #292940;
      text-transform: uppercase;
      font-weight: bold;
      font-size: 16px;
-     color: #999999;
-     border-radius: 5px 5px 0 0;
+     color: $color-text-inactive;
      cursor: pointer;
- }
- .tab-text {
-     vertical-align: middle;
-     margin: 0 auto;
- }
- .close-button {
- }
- .tab:nth-child(even) {
-     background-color: #292940;
- }
- .tab:nth-child(odd) {
-     background-color: #242435;
- }
- .tab:hover {
-     color: #EEEEEE;
-     background-color: #393950;
- }
- .tab.active {
-     background-color: #101025;
-     color: #EEEEEE;
-     cursor: default;
- }
- .tab-container {
-     height: 100%;
+
+     &:nth-child(even) {
+       background-color: $color-primary;
+     }
+     &:nth-child(odd) {
+       background-color: $color-alternate;
+     }
+
+     &:hover {
+       background-color: $color-active;
+       color: $color-text;
+     }
+
+     &.active {
+       background-color: $color-background;
+       color: $color-text;
+       cursor: default;
+     }
+
+     .tab-text {
+       vertical-align: middle;
+       text-overflow: ellipsis;
+       white-space: nowrap;
+       width: calc(100% - 32px);
+     }
+
+     .close-button {
+       position: absolute;
+       right: 0;
+       top: 0;
+       height: $tab-height;
+       width: $tab-height;
+       color: $color-text-inactive;
+       cursor: pointer;
+       background-color: inherit;
+
+       &:hover {
+         color: $color-text;
+         background-color: $shadow-white-light;
+       }
+     }
+   }
+
+   .tab-container {
+     height: calc(100% - 32px);
      width: 100%;
-     padding: 4px;
-     background-color: #101025;
+     background-color: $color-background;
      position: absolute;
-     top: 32px;
+     top: $tab-height;
      left: 0;
- }
- .open-app {
-     color: #EEEEEE;
-     padding: 8px;
+     border: 5px solid $shadow-white-light;
+   }
+
+   .open-app {
+     color: $color-text-inactive;
      cursor: pointer;
- }
- .open-app:hover {
-     background-color: #393950;
+     width: $tab-height;
+     font-size: 24px;
+     border-bottom: none;
+     padding: inherit;
+
+     &:nth-child(even) {
+       background-color: $color-primary;
+     }
+     &:nth-child(odd) {
+       background-color: $color-alternate;
+     }
+
+     &:hover {
+       color: $color-text;
+       background-color: $color-active;
+       border-color: $color-active;
+     }
+   }
  }
 
 </style>

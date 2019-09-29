@@ -8,5 +8,6 @@ module.exports = {
     },
     rules: {
         'vue/require-v-for-key': false,
+        'no-magic-numbers': 0,
     },
 };

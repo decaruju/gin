@@ -1,169 +1,66 @@
 <template>
   <div class="color-app">
-    <input
-      v-model="baseColor"
-      type="color"
-    >
-    <input
-      v-model="angle"
-      type="range"
-      min="0"
-      :max="maxAngle"
-      step="1"
-    >
-    {{ angle }}
-    <button
-      v-if="numberOfColors !== 2"
-      @click="numberOfColors=2"
-      v-text="2"
-    />
-    <button
-      v-if="numberOfColors !== 3"
-      @click="numberOfColors=3"
-      v-text="3"
-    />
-    <button
-      v-if="numberOfColors !== 4"
-      @click="numberOfColors=4"
-      v-text="4"
-    />
-    <ColorShade :color="baseColor" />
-    <template v-if="numberOfColors === 2">
-      <ColorShade :color="color(baseColor).rotate(+angle).hex()" />
-      <svg
-        height="120"
-        width="120"
+    <div class="settings">
+      <input
+        v-model="baseColor"
+        type="text"
       >
-        <line
-          x1="60"
-          y1="60"
-          x2="60"
-          y2="10"
-          :stroke="baseColor"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          :x2="Math.sin((+angle+180)/360*Math.PI*2)*50+60"
-          :y2="Math.cos((+angle+180)/360*Math.PI*2)*50+60"
-          :stroke="color(baseColor).rotate(+angle).hex()"
-          stroke-width="3"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="50"
-          stroke="white"
-          stroke-width="3"
-          fill="none"
-        />
-      </svg>
-    </template>
-    <template v-if="numberOfColors === 3">
-      <ColorShade :color="color(baseColor).rotate(+angle).hex()" />
-      <ColorShade :color="color(baseColor).rotate(-angle).hex()" />
-      <svg
-        height="120"
-        width="120"
+      <span class="slider-group">
+        <HexSlider name="R" v-model="red" />
+        <HexSlider name="G" v-model="green" />
+        <HexSlider name="B" v-model="blue" />
+      </span>
+      <span class="slider-group">
+        <HexSlider name="H" v-model="hue" />
+        <HexSlider name="S" v-model="saturation" />
+        <HexSlider name="V" v-model="value" />
+      </span>
+      Angle
+      <input
+        v-model.number="angle"
+        type="range"
+        min="0"
+        :max="maxAngle"
+        step="1"
       >
-        <line
-          x1="60"
-          y1="60"
-          x2="60"
-          y2="10"
-          :stroke="baseColor"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          :x2="Math.sin((+angle+180)/360*Math.PI*2)*50+60"
-          :y2="Math.cos((+angle+180)/360*Math.PI*2)*50+60"
-          :stroke="color(baseColor).rotate(+angle).hex()"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          :x2="Math.sin((-angle+180)/360*Math.PI*2)*50+60"
-          :y2="Math.cos((-angle+180)/360*Math.PI*2)*50+60"
-          :stroke="color(baseColor).rotate(-angle).hex()"
-          stroke-width="3"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="50"
-          stroke="white"
-          stroke-width="3"
-          fill="none"
-        />
-      </svg>
-    </template>
-    <template v-if="numberOfColors=== 4">
-      <ColorShade :color="color(baseColor).rotate(+angle).hex()" />
-      <ColorShade :color="color(baseColor).rotate(180).hex()" />
-      <ColorShade :color="color(baseColor).rotate(180+angle).hex()" />
-      <svg
-        height="120"
-        width="120"
-      >
-        <line
-          x1="60"
-          y1="60"
-          x2="60"
-          y2="10"
-          :stroke="baseColor"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          x2="60"
-          y2="110"
-          :stroke="color(baseColor).rotate(180).hex()"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          :x2="Math.sin((+angle+180)/360*Math.PI*2)*50+60"
-          :y2="Math.cos((+angle+180)/360*Math.PI*2)*50+60"
-          :stroke="color(baseColor).rotate(+angle).hex()"
-          stroke-width="3"
-        />
-        <line
-          x1="60"
-          y1="60"
-          :x2="Math.sin((+angle)/360*Math.PI*2)*50+60"
-          :y2="Math.cos((+angle)/360*Math.PI*2)*50+60"
-          :stroke="color(baseColor).rotate(180+angle).hex()"
-          stroke-width="3"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="50"
-          stroke="white"
-          stroke-width="3"
-          fill="none"
-        />
-      </svg>
-    </template>
+      <button
+        v-if="numberOfColors !== 2"
+        @click="numberOfColors=2"
+        v-text="2"
+      />
+      <button
+        v-if="numberOfColors !== 3"
+        @click="numberOfColors=3"
+        v-text="3"
+      />
+      <button
+        v-if="numberOfColors !== 4"
+        @click="numberOfColors=4"
+        v-text="4"
+      />
+    </div>
+    <div class="palette">
+      <ColorShade v-for="color in palette" :color="color" />
+    </div>
   </div>
 </template>
 
 <script>
+import HexSlider from './HexSlider.vue';
 import color from 'color';
 import ColorShade from './ColorShade.vue';
 
 export default {
   name: 'Color',
-  components: { ColorShade },
+  components: {
+    ColorShade,
+    HexSlider,
+  },
   data() {
     return {
-      baseColor: '#458723',
+      red: 0,
+      green: 0,
+      blue: 0,
       color,
       angle: 120,
       numberOfColors: 4,
@@ -171,8 +68,61 @@ export default {
     };
   },
   computed: {
+    hue: {
+      get() {
+        return color(this.baseColor).hue();
+      },
+      set(value) {
+        this.baseColor = color.hsv(value, this.saturation, this.value);
+      },
+    },
+    saturation: {
+      get() {
+        return color(this.baseColor).saturationv();
+      },
+      set(value) {
+        this.baseColor = color.hsv(this.hue, value, this.value);
+      },
+    },
+    value: {
+      get() {
+        return color(this.baseColor).luminosity();
+      },
+      set(value) {
+        this.baseColor = color.hsv(this.hue, this.saturation, value);
+      },
+    },
+    baseColor: {
+      get() {
+        return color.rgb(this.red, this.green, this.blue).hex();
+      },
+      set(value) {
+        this.log(value);
+        this.red = parseInt(value.red(), 10);
+        this.green = parseInt(value.green(), 10);
+        this.blue = parseInt(value.blue(), 10);
+      },
+    },
     maxAngle() {
       return this.numberOfColors === 2 ? 360 : 180; // eslint-disable-line no-magic-numbers
+    },
+    palette() {
+      const currentPalette = [
+        this.baseColor,
+        this.rotatedColor(this.angle),
+      ];
+      if (this.numberOfColors === 3) {
+        currentPalette.push(this.rotatedColor(-this.angle));
+      } else if (this.numberOfColors === 4) {
+        currentPalette.push(this.rotatedColor(180));
+        currentPalette.push(this.rotatedColor(180 + this.angle));
+      }
+      return currentPalette;
+    },
+  },
+  methods: {
+    rotatedColor(angle) {
+      return color(this.baseColor).rotate(angle).hex();
     },
   },
 };
@@ -186,5 +136,8 @@ export default {
  .color {
    width: 100px;
    height: 100px;
+ }
+ .slider-group {
+   display: inline-block;
  }
 </style>

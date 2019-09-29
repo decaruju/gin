@@ -54,11 +54,13 @@ export default {
       component: Color,
       name: 'Color picker',
       icon: 'fa-palette',
+      shortcut: 'KeyL',
     },
     {
       component: Sql,
       name: 'Sql editor',
       icon: 'fa-database',
+      shortcut: 'KeyS',
     },
   ],
 };

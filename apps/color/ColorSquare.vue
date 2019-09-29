@@ -2,7 +2,7 @@
   <div
     class="color-square"
     :style="{ 'background-color': backgroundColor, color: color }"
-    v-text="color.toUpperCase()"
+    v-text="backgroundColor.toUpperCase()"
   />
 </template>
 

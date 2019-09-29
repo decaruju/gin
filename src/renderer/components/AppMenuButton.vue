@@ -4,8 +4,14 @@
     @click.stop="$emit('click')"
   >
     <div :class="['fa', 'fa-2x', app.icon]" />
-    <div v-text="app.name" />
-    <div v-text="app.shortcut" />
+    <div
+      class="app-name"
+      v-text="app.name"
+    />
+    <div
+      class="app-shortcut"
+      v-text="app.shortcut"
+    />
   </button>
 </template>
 
