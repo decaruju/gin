@@ -69,13 +69,7 @@ export default {
   data() {
     return {
       query: 'SELECT NOW();',
-      config: {
-        host: 'salt.db.elephantsql.com',
-        user: 'hqectjvv',
-        password: 'HHdbpQap7lBeEvzeJyUSoJlbqH_aGrqZ',
-        database: 'hqectjvv',
-        port: '5432',
-      },
+      config: {},
       data: {},
       schemas: [],
       fields: [],
