@@ -56,6 +56,8 @@ export default {
 
  .tab-view {
    height: 100%;
+   position: absolute;
+   width: 100%;
 
    .tab {
      position: relative;

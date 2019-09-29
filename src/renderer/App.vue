@@ -1,10 +1,12 @@
 <template>
   <div id="app">
-    <Root
-      :event="currentEvent"
-      v-bind="appProps"
-      @eventCatched="clearEvent"
-    />
+    <div class="root-app">
+      <Root
+        :event="currentEvent"
+        v-bind="appProps"
+        @eventCatched="clearEvent"
+      />
+    </div>
     <AppMenu
       v-if="choice"
       :available-apps="availableApps"
@@ -35,6 +37,7 @@ export default {
     return {
       choice: undefined,
       currentEvent: [],
+      now: new Date(),
       appProps: {
         openApp: this.openApp,
         keys: keys,
@@ -48,6 +51,7 @@ export default {
   },
   created() {
     document.addEventListener('keydown', this.manageEvent);
+    setInterval(() => { this.now = new Date(); }, 500);
   },
   methods: {
     clearEvent() {
@@ -94,7 +98,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import './index.scss';
+
 button {
  border: none;
  font-weight: bold;
@@ -108,10 +114,25 @@ button {
   outline: none !important;
 }
 html, body, #app {
-    background-color: black;
+  background-color: black;
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+
+  > .status-bar {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    height: 16px;
+    background-color: $color-background;
+    color: $color-text-inactive;
+  }
+
+  > .root-app {
     height: 100%;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 100%;
+  }
 }
 * {
   overflow: hidden;
