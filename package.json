@@ -61,7 +61,7 @@
     "color": "^3.1.2",
     "mailpop3": "^0.1.0",
     "nodegit": "^0.25.1",
-    "nodemailer": "^6.3.0",
+    "nodemailer": "^6.4.16",
     "pg": "^7.12.1",
     "simple-git": "^1.126.0",
     "vue": "^2.5.16",
