@@ -63,7 +63,7 @@
     "nodegit": "^0.25.1",
     "nodemailer": "^6.3.0",
     "pg": "^7.12.1",
-    "simple-git": "^1.126.0",
+    "simple-git": "^3.3.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
